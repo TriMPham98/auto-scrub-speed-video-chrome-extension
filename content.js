@@ -31,11 +31,27 @@
     lastStatusAt: 0,
   };
 
+  function snapRate(v) {
+    return Math.round(Number(v) * 100) / 100;
+  }
+
   function speedFor(mode) {
     const s = state.settings;
-    if (mode === "music") return s.musicSpeed;
-    if (mode === "speech") return s.speechSpeed;
-    return s.silenceSpeed;
+    if (mode === "music") return snapRate(s.musicSpeed);
+    if (mode === "speech") return snapRate(s.speechSpeed);
+    return snapRate(s.silenceSpeed);
+  }
+
+  function applyRate(media, rate) {
+    const target = snapRate(rate);
+    state.targetRate = target;
+    try {
+      media.preservesPitch = true;
+      if (Math.abs((media.playbackRate || 1) - target) >= 0.005) {
+        media.playbackRate = target;
+      }
+      state.appliedRate = target;
+    } catch (_) {}
   }
 
   function isUsableMedia(el) {
@@ -208,17 +224,7 @@
     const result = state.classifier.update(features, dt, media.playbackRate || 1);
     state.mode = result.mode;
     const target = speedFor(result.mode === "silence" ? result.lastVoiced || "speech" : result.mode);
-    state.targetRate = target;
-
-    const current = media.playbackRate || 1;
-    const next = current + (target - current) * Math.min(1, dt / 220);
-    if (Math.abs(next - current) > 0.008 || Math.abs(current - target) > 0.04) {
-      try {
-        media.preservesPitch = true;
-        media.playbackRate = Math.round(next * 100) / 100;
-        state.appliedRate = media.playbackRate;
-      } catch (_) {}
-    }
+    applyRate(media, target);
 
     updateOverlay(result);
     if (now - state.lastStatusAt > 400) {
@@ -310,7 +316,7 @@
     const labels = { music: "Music", speech: "Talking", silence: "Silence" };
     el.querySelector(`.${PREFIX}-mode`).textContent = labels[mode] || mode;
     el.querySelector(`.${PREFIX}-speed`).textContent =
-      `${(state.media && state.media.playbackRate ? state.media.playbackRate : state.targetRate).toFixed(2)}×`;
+      `${snapRate(state.targetRate).toFixed(2)}×`;
     positionOverlay();
   }
 
@@ -337,7 +343,7 @@
       chrome.runtime.sendMessage({
         type: "STATUS",
         mode: result.mode,
-        speed: state.media ? state.media.playbackRate : state.targetRate,
+        speed: state.targetRate,
         speech: result.speech,
         music: result.music,
         enabled: state.settings.enabled,
@@ -350,11 +356,7 @@
     state.settings = { ...DEFAULTS, ...state.settings, ...next };
     state.classifier.setOptions({ overlapBias: state.settings.overlapBias });
     if (!state.settings.enabled) {
-      if (state.media) {
-        try {
-          state.media.playbackRate = 1;
-        } catch (_) {}
-      }
+      if (state.media) applyRate(state.media, 1);
       teardownAudio();
       hideOverlay();
     } else if (!wasEnabled || !state.analyser) {
@@ -367,7 +369,7 @@
       type: "STATUS",
       enabled: state.settings.enabled,
       mode: state.mode,
-      speed: state.media ? state.media.playbackRate : state.targetRate,
+      speed: state.targetRate,
       speech: state.classifier.speechEma,
       music: state.classifier.musicEma,
       hasMedia: Boolean(state.media),

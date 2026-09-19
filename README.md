@@ -17,6 +17,8 @@ Detection is on-device via the Web Audio API. Nothing is recorded or sent anywhe
 4. Open a video (YouTube, a course site, this repo’s demo page) and press play
 5. Pin the extension to tweak speeds or turn it off
 
+The version on `chrome://extensions` comes from `manifest.json` (`version` / `version_name`). After pulling or editing, bump that number, then click **Reload** on the extension card so the dashboard shows the new version.
+
 Keyboard toggle: `Alt+Shift+S`
 
 ## How it decides
@@ -27,7 +29,7 @@ Every ~40 ms the content script taps the media element with `captureStream()` (p
 - **Music:** bass + harmonic stack, regular onsets (a beat), more continuous energy
 - **Overlap:** a music bed under talking counts as music, so a song does not get sped up. The popup slider *When both overlap, prefer* changes that bias.
 
-Speed changes are held for a few hundred milliseconds so a rest in a song does not flip to 1.5×, and ramped so the jump is not a click.
+Speed changes are held for a few hundred milliseconds so a rest in a song does not flip to 1.5×, then snap between the two set speeds — never 1.03× or other in-between rates.
 
 ## Demo
 

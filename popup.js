@@ -71,6 +71,18 @@ function persistFromInputs() {
   $(id).addEventListener("change", persistFromInputs);
 });
 
+function paintVersion() {
+  const el = $("extVersion");
+  if (!el) return;
+  const manifest =
+    typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.getManifest
+      ? chrome.runtime.getManifest()
+      : null;
+  el.textContent = manifest && manifest.version ? "v" + manifest.version : "";
+}
+
+paintVersion();
+
 if (hasChrome) {
   chrome.storage.local.get(DEFAULTS, paintSettings);
 } else {

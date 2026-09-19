@@ -1,9 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Auto Scrub Speed",
-  "version": "1.0.0",
+  "version": "1.1.1",
+  "version_name": "1.1.1",
   "description": "Play videos at 1× when music is playing and 1.5× when someone is talking. Detection runs locally.",
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Auto Scrub Speed",
@@ -23,8 +26,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["classifier.js", "content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "classifier.js",
+        "content.js"
+      ],
       "run_at": "document_idle",
       "all_frames": true
     }

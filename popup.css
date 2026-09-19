@@ -198,6 +198,11 @@ footer {
   font-size: 11px;
 }
 
+.ver {
+  font-variant-numeric: tabular-nums;
+  margin-right: 6px;
+}
+
 kbd {
   background: #232833;
   border: 1px solid var(--line);
