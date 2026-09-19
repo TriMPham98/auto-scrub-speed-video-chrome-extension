@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Auto Scrub Speed — classifier demo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0e1116;
+        --panel: #171c25;
+        --ink: #f4f1ea;
+        --muted: #9aa1ad;
+        --teal: #3ee0c4;
+        --amber: #ffb020;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font: 15px/1.45 "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+        background:
+          radial-gradient(1200px 600px at 10% -10%, #1b2a28, transparent),
+          radial-gradient(900px 500px at 100% 0%, #2a2214, transparent),
+          var(--bg);
+        color: var(--ink);
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+      }
+      h1 { font-size: 28px; margin: 0 0 6px; }
+      .lede { color: var(--muted); margin: 0 0 28px; }
+      .stage {
+        background: var(--panel);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 18px;
+        padding: 18px;
+      }
+      video {
+        width: 100%;
+        height: 220px;
+        background: #0a0c10;
+        border-radius: 12px;
+        object-fit: cover;
+      }
+      .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 8px; }
+      button {
+        appearance: none;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: #222834;
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 8px 14px;
+        cursor: pointer;
+        font: inherit;
+      }
+      button[aria-pressed="true"] {
+        background: #14332e;
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .readout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .card {
+        background: #12161e;
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+      .k { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+      .v { font-size: 28px; font-variant-numeric: tabular-nums; margin-top: 4px; }
+      .v.music { color: var(--teal); }
+      .v.speech { color: var(--amber); }
+      .bar {
+        height: 8px;
+        border-radius: 99px;
+        background: #2a3140;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .bar > span { display: block; height: 100%; width: 0%; }
+      #speechBar { background: var(--amber); }
+      #musicBar { background: var(--teal); }
+      ol { color: var(--muted); padding-left: 18px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Auto Scrub Speed demo</h1>
+      <p class="lede">
+        Synthesizes talking-like audio vs music-like audio in the browser.
+        The extension (if loaded) should switch this video between 1.5× and 1×.
+      </p>
+      <div class="stage">
+        <video id="vid" controls playsinline></video>
+        <div class="btns">
+          <button id="btnSpeech" aria-pressed="false">Talking</button>
+          <button id="btnMusic" aria-pressed="false">Music</button>
+          <button id="btnMix" aria-pressed="false">Both</button>
+          <button id="btnStop" aria-pressed="false">Silence</button>
+        </div>
+        <div class="readout">
+          <div class="card">
+            <div class="k">Built-in classifier</div>
+            <div class="v" id="mode">—</div>
+            <div class="bar"><span id="speechBar"></span></div>
+            <div class="k" style="margin-top:6px">Talking score</div>
+            <div class="bar"><span id="musicBar"></span></div>
+            <div class="k" style="margin-top:6px">Music score</div>
+          </div>
+          <div class="card">
+            <div class="k">Would play at</div>
+            <div class="v" id="speed">1.00×</div>
+            <p class="k" id="hint" style="margin-top:10px;text-transform:none;letter-spacing:0">
+              Click Talking or Music, then play the video.
+            </p>
+          </div>
+        </div>
+      </div>
+      <h2>Load the extension</h2>
+      <ol>
+        <li>Open <code>chrome://extensions</code></li>
+        <li>Enable Developer mode</li>
+        <li>Load unpacked → this repo folder</li>
+        <li>Play Talking, then Music, and watch the overlay switch 1.50× / 1.00×</li>
+      </ol>
+    </main>
+    <script src="../classifier.js"></script>
+    <script src="demo.js"></script>
+  </body>
+</html>

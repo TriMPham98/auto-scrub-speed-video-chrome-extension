@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Auto Scrub Speed</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <img src="icons/icon48.png" width="28" height="28" alt="" />
+        <div>
+          <h1>Auto Scrub Speed</h1>
+          <p class="tag">1× music · 1.5× talking</p>
+        </div>
+      </div>
+      <label class="switch" title="Enable or disable on this browser">
+        <input type="checkbox" id="enabled" />
+        <span class="knob"></span>
+      </label>
+    </header>
+
+    <section class="now" id="now">
+      <div class="now-row">
+        <span class="now-dot" id="nowDot"></span>
+        <span id="nowMode">Looking for a video…</span>
+        <span class="now-speed" id="nowSpeed"></span>
+      </div>
+      <div class="meter" title="Speech vs music score">
+        <div class="meter-fill" id="meterFill"></div>
+      </div>
+      <div class="meter-labels">
+        <span>Talking</span>
+        <span>Music</span>
+      </div>
+    </section>
+
+    <section class="controls">
+      <label>
+        <div class="row">
+          <span>Talking speed</span>
+          <strong id="speechVal">1.50×</strong>
+        </div>
+        <input id="speechSpeed" type="range" min="1" max="3" step="0.05" />
+      </label>
+      <label>
+        <div class="row">
+          <span>Music speed</span>
+          <strong id="musicVal">1.00×</strong>
+        </div>
+        <input id="musicSpeed" type="range" min="0.5" max="1.5" step="0.05" />
+      </label>
+      <label>
+        <div class="row">
+          <span>When both overlap, prefer</span>
+          <strong id="biasVal">balanced</strong>
+        </div>
+        <input id="overlapBias" type="range" min="-0.15" max="0.3" step="0.01" />
+      </label>
+      <label class="check">
+        <input type="checkbox" id="overlay" />
+        Show overlay on the video
+      </label>
+    </section>
+
+    <footer>
+      Toggle with <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>
+      · Audio never leaves this device
+    </footer>
+    <script src="popup.js"></script>
+  </body>
+</html>
